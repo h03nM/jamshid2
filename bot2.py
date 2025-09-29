@@ -1,12 +1,23 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import Application, MessageHandler, filters
 
-TOKEN = "484655148:AAFmEy4LuSu0oAQxVcUHeeNX9z3PXFBXeAE"  # توکن رباتت از BotFather
+# توکن ربات
+TOKEN = "484655148:AAFmEy4LuSu0oAQxVcUHeeNX9z3PXFBXeAE"
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("سلام! من آماده‌ام.")
+# تابعی که Chat ID گروه رو نشون میده
+async def show_chat_id(update, context):
+    chat_id = update.message.chat.id
+    print("📌 Chat ID گروه:", chat_id)  # توی کنسول چاپ میشه
+    await update.message.reply_text(f"Chat ID این گروه: {chat_id}")
+
+def main():
+    app = Application.builder().token(TOKEN).build()
+
+    # هر پیامی که توی گروه بیاد → Chat ID رو برمی‌گردونه
+    app.add_handler(MessageHandler(filters.ALL, show_chat_id))
+
+    print("✅ ربات روشن شد! یه پیام توی گروه بفرست تا Chat ID رو بگیری ...")
+    app.run_polling()
 
 if __name__ == "__main__":
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.run_polling()
+    main()
+
